@@ -3,7 +3,7 @@ import {ID} from "../components/table/Table.tsx";
 
 export const createRow = async (data) => {
     try {
-        axios({
+        return axios({
             url: `http://185.244.172.108:8081/v1/outlay-rows/entity/${ID}/row/create`,
             method: "POST",
             data: {
@@ -16,6 +16,6 @@ export const createRow = async (data) => {
             }
         })
     } catch (e) {
-        console.log(e.message)
+       return  console.log(e.message)
     }
 }

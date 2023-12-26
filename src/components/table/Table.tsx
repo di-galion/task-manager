@@ -166,6 +166,42 @@ const  TableComponent = () => {
     //     parentId: 68667,
     // })
 
+    const updateRows = (id, rowValue) => {
+        // const array = []
+
+        console.log("updateRows", data)
+        const go = (rows) => {
+            return rows.map((row) => {
+                if(row.id === id) {
+                    console.log("IF")
+                    if (row.child === undefined) row.child = []
+                    // перестать оставлять детей
+                    row = {
+                        ...rowValue,
+                        child: row.child || []
+                    }
+                    // array.push(row)
+                    return row
+                } else {
+                    console.log("ELSE")
+                    // array.push(row)
+                    if (row.child && row.child.length !== 0) {
+                        console.log("ELSE IF")
+                        row.child = go(row.child)
+                        return row
+                    }
+                    return row
+                }
+            })
+        }
+        const r = go(data)
+        console.log("GO",r)
+        console.log("NEW DATA", r, data)
+        setData(r)
+        renderRows(r)
+    }
+
+
     const addNewRow = (id) => {
         // const array = []
 
@@ -241,6 +277,7 @@ const  TableComponent = () => {
                 const currentLevel = level
                 array.push((
                     <TableRowComponent
+                        updateRows={updateRows}
                         addNewRow={addNewRow}
                         level={currentLevel}
                         indexInChildArray={index}
@@ -251,6 +288,7 @@ const  TableComponent = () => {
                         setIsOnLevelHover={setIsOnLevelHover}
                         isOnLevelHover={isOnLevelHover}
                         row={row}
+                        //
                         isNewRow={row.child === undefined}
                         // isEditing={isEditing}
                         // setIsEditing={setIsEditing}

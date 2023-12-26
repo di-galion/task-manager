@@ -68,5 +68,7 @@ export const NEW_ROW = {
     "overheads": 0,
     "rowName": "TEST NAME",
     "salary": 0,
-    "supportCosts": 0
+    "supportCosts": 0,
+    id: 0,
+    // child: true
 }

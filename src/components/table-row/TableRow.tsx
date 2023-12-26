@@ -19,7 +19,8 @@ export interface ITableRow {
     setIsOnLevelHover: (v: boolean) => void,
     indexInChildArray?: number
     isLastInLevel?: boolean,
-    childCount?: number
+    childCount?: number,
+    updateRows?: (id: number, rowValue: any) => void
 }
 const TableRowComponent: FC<ITableRow> = (
     {
@@ -33,11 +34,12 @@ const TableRowComponent: FC<ITableRow> = (
         setIsOnLevelHover,
         indexInChildArray,
         isLastInLevel,
-        childCount
+        childCount,
+        updateRows
     }
 ) => {
     const [isEditing, setIsEditing] = useState(isNewRow)
-    const rowRef = useRef(null)
+    const inputRef = useRef(null)
     const [rowName, setRowName] = useState<string>(row.rowName)
     const [salary, setSalary] = useState<string | number>(row.salary)
     const [equipmentCosts, setEquipmentCosts] = useState<string | number>(row.equipmentCosts)
@@ -49,44 +51,49 @@ const TableRowComponent: FC<ITableRow> = (
         dataDeleteRow(row.id)
     }
 
-    useEffect(() => {
-        if (isEditing) rowRef.current.addEventListener("keydown", async (e) => {
-            if (e.keyCode !== 13 || e.code !== "Enter") return
-            console.log("ENTER")
-            setIsEditing(false)
-            if (isNewRow) {
-                createRow({
-                    rowName,
-                    salary,
-                    equipmentCosts,
-                    mainCosts,
-                    estimatedProfit,
-                    parentId: row.parentId,
-                })
+    // useEffect(() => {
+    //     if (isEditing) inputRef.current.addEventListener("keydown", async (e) => {
+    //
+    //
+    //     })
+    // }, [])
 
-            }
-            else {
-                console.log("UPDATE")
-                updateRow(row.id,{
-                    rowName,
-                    salary,
-                    equipmentCosts,
-                    mainCosts,
-                    estimatedProfit,
-                    // parentId: 68458,
-                })
-            }
+    const onKeyPressHandler = async (e) => {
+        console.log("onKeyPressHandler",e)
+        if (e.charCode !== 13 || e.key !== "Enter") return
+        console.log("ENTER")
+        setIsEditing(false)
+        if (isNewRow) {
+            createRow({
+                rowName,
+                salary,
+                equipmentCosts,
+                mainCosts,
+                estimatedProfit,
+                parentId: row.parentId,
+            })
 
-        })
-    }, [])
-
+        }
+        else {
+            console.log("UPDATE")
+            const response = await updateRow(row.id,{
+                rowName,
+                salary,
+                equipmentCosts,
+                mainCosts,
+                estimatedProfit,
+                // parentId: 68458,
+            })
+            console.log(response)
+            updateRows(row.id, response.data.current)
+        }
+    }
     // console.log(level, isOnLevelHover)
     console.log(row.rowName, level, childCount)
 
     return (
         <>
             <StyledTableRow
-                ref={rowRef}
                 onDoubleClick={() => setIsEditing(true)}
                 sx={{
                     '& > td, & > th': {
@@ -137,6 +144,7 @@ const TableRowComponent: FC<ITableRow> = (
 
                 <StyledTableCell align="left">
                     <input
+                        onKeyPress={onKeyPressHandler}
                         onChange={({target}) => setRowName(target.value)}
                         name={row.rowName}
                         className={classNames("cell-input", {
@@ -148,6 +156,7 @@ const TableRowComponent: FC<ITableRow> = (
                 </StyledTableCell>
                 <StyledTableCell align="left">
                     <input
+                        onKeyPress={onKeyPressHandler}
                         onChange={({target}) => setSalary(target.value)}
                         name={row.salary}
                         className={classNames("cell-input", {
@@ -159,6 +168,7 @@ const TableRowComponent: FC<ITableRow> = (
                 </StyledTableCell>
                 <StyledTableCell align="left">
                     <input
+                        onKeyPress={onKeyPressHandler}
                         onChange={({target}) => setEquipmentCosts(target.value)}
                         name={row.equipmentCosts}
                         className={classNames("cell-input", {
@@ -170,6 +180,7 @@ const TableRowComponent: FC<ITableRow> = (
                 </StyledTableCell>
                 <StyledTableCell align="left">
                     <input
+                        onKeyPress={onKeyPressHandler}
                         onChange={({target}) => setMainCosts(target.value)}
                         name={row.mainCosts}
                         className={classNames("cell-input", {
@@ -181,6 +192,7 @@ const TableRowComponent: FC<ITableRow> = (
                 </StyledTableCell>
                 <StyledTableCell align="left">
                     <input
+                        onKeyPress={onKeyPressHandler}
                         onChange={({target}) => setEstimatedProfit(target.value)}
                         name={row.estimatedProfit}
                         className={classNames("cell-input", {
