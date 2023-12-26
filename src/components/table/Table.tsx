@@ -113,10 +113,11 @@ const  TableComponent = () => {
     const [render, setRender] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
-    // console.log("data", data)
+    console.log("data", data)
 
     const dataDeleteRow = (id) => {
-        setData((currentValue) => currentValue.filter((row) => row.id !== id))
+
+        // setData((currentValue) => currentValue.filter((row) => row.id !== id))
     }
 
     useEffect(() => {
@@ -153,6 +154,18 @@ const  TableComponent = () => {
         })
 
     }, [])
+
+    const ar = [1,2,3]
+    const d = ar.map((i) => {
+        if (i == 2) {
+            return
+        }
+        else {
+            return i
+        }
+    })
+
+    console.log(d)
     useEffect(() => {
         if (data.length !== 0) renderRows(data)
     }, [isOnLevelHover])
@@ -166,20 +179,36 @@ const  TableComponent = () => {
     //     parentId: 68667,
     // })
 
-    const updateRows = (id, rowValue) => {
+    const updateRows = (id, rowValues, mode = "update") => {
         // const array = []
 
         console.log("updateRows", data)
         const go = (rows) => {
-            return rows.map((row) => {
-                if(row.id === id) {
+            let ar = rows.map((row) => {
+                let isMatched = {}
+                //
+                if (mode === "delete" && row.id === id) {
+                    return
+                }
+                //
+                rowValues.forEach((item, index) => {
+                    if (mode === "delete" && index === 0) return
+
+                    if (row.id === item.id || (mode === "create" && row.id === 0)) {
+                        console.log("IS MATCHED >>>>>>>>>>>>>", mode, row.id)
+                        isMatched = item
+                    }
+
+                })
+                if(Object.keys(isMatched).length !== 0) {
                     console.log("IF")
                     if (row.child === undefined) row.child = []
                     // перестать оставлять детей
                     row = {
-                        ...rowValue,
-                        child: row.child || []
+                        ...isMatched,
+                        child: row.child
                     }
+                    row.child = go(row.child)
                     // array.push(row)
                     return row
                 } else {
@@ -193,6 +222,11 @@ const  TableComponent = () => {
                     return row
                 }
             })
+
+            if (mode === "delete") {
+                ar = ar.filter(i => i !== undefined)
+            }
+            return ar
         }
         const r = go(data)
         console.log("GO",r)

@@ -20,7 +20,7 @@ export interface ITableRow {
     indexInChildArray?: number
     isLastInLevel?: boolean,
     childCount?: number,
-    updateRows?: (id: number, rowValue: any) => void
+    updateRows?: (id: number, rowValue: any, mode?: string) => void
 }
 const TableRowComponent: FC<ITableRow> = (
     {
@@ -46,9 +46,10 @@ const TableRowComponent: FC<ITableRow> = (
     const [mainCosts, setMainCosts] = useState<string |number>(row.mainCosts)
     const [estimatedProfit, setEstimatedProfit] = useState<string | number>(row.estimatedProfit)
 
-    const onTrashClickHandler = () => {
-        deleteRow(row.id)
-        dataDeleteRow(row.id)
+    const onTrashClickHandler = async () => {
+        const response = await deleteRow(row.id)
+        console.log("DELETE RESPONSE", response)
+        updateRows(row.id, [response.data.current, ...response.data.changed], "delete")
     }
 
     // useEffect(() => {
@@ -64,7 +65,7 @@ const TableRowComponent: FC<ITableRow> = (
         console.log("ENTER")
         setIsEditing(false)
         if (isNewRow) {
-            createRow({
+            const response = await createRow({
                 rowName,
                 salary,
                 equipmentCosts,
@@ -72,7 +73,8 @@ const TableRowComponent: FC<ITableRow> = (
                 estimatedProfit,
                 parentId: row.parentId,
             })
-
+            console.log("CREATE RESPONSE", response, row.parentId)
+            updateRows(row.id, [response.data.current, ...response.data.changed], "create")
         }
         else {
             console.log("UPDATE")
@@ -85,7 +87,7 @@ const TableRowComponent: FC<ITableRow> = (
                 // parentId: 68458,
             })
             console.log(response)
-            updateRows(row.id, response.data.current)
+            updateRows(row.id, [response.data.current, ...response.data.changed])
         }
     }
     // console.log(level, isOnLevelHover)
