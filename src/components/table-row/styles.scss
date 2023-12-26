@@ -37,11 +37,8 @@
 }
 
 .level-block {
-  //margin-left: 11px;
   display: flex;
   position: relative;
-  //
-  max-width: 40px;
 }
 
 .icon-block {
@@ -50,15 +47,13 @@
   align-items: center;
   border-radius: 4px;
   padding: 0 2px;
-  //padding: 5px;
 }
 
 .line-first {
-  //background-color: white;
   z-index: 10;
   position: absolute;
-  border-bottom: 1px solid white;
-  border-left: 1px solid white;
+  border-bottom: 1px solid #C6C6C6;
+  border-left: 1px solid #C6C6C6;
   width: 13px;
   height: 52px;
   bottom: 50%;
@@ -84,7 +79,7 @@
   position: absolute;
   z-index: 10;
   //border-bottom: 1px solid white;
-  border-left: 1px solid white;
+  border-left: 1px solid #C6C6C6;
   width: 13px;
   height: 100px;
   //bottom: 50%;

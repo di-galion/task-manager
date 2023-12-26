@@ -32,13 +32,32 @@ const EMPTY_ROW = {
 export const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '&': {
         backgroundColor: "#202124",
+
         th: {
             border: "none",
-            borderBottom: "1px solid #414144"
-        },
+            borderBottom: "1px solid #414144",
+
+            height: "60px",
+            color: "#FFFFFF",
+            // fontFamily: Roboto,
+            fontSize: "14px",
+            fontWeight: 400,
+            lineHeight: "18px",
+            letterSpacing: "0.10000000149011612px",
+            textAlign: "left",
+            },
         td: {
             border: "none",
-            borderBottom: "1px solid #414144"
+            borderBottom: "1px solid #414144",
+
+            height: "60px",
+            color: "#FFFFFF",
+            // fontFamily: Roboto,
+            fontSize: "14px",
+            fontWeight: 400,
+            lineHeight: "18px",
+            letterSpacing: "0.10000000149011612px",
+            textAlign: "left",
         }
     },
 }));
@@ -64,133 +83,34 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 
-// const rows = [
-//     {
-//         parentId: "none",
-//         id: 0,
-//         values: {
-//             level: 1,
-//             workName: "Frozen yoghurt",
-//             salary: 124124,
-//             equipment: 124,
-//             costs: 1412343,
-//             profit: 124124
-//         },
-//         children: [
-//             {
-//                 parentId: 0,
-//                 prevLevel: 1,
-//                 id: 0,
-//                 values: {
-//                     level: 2,
-//                     workName: "Frozen yoghurt",
-//                     salary: 124124,
-//                     equipment: 124,
-//                     costs: 1412343,
-//                     profit: 124124
-//                 },
-//                 nextLevel: {
-//                     prevLevel: 1,
-//                     values: {
-//                         level: 2,
-//                         workName: "Frozen yoghurt",
-//                         salary: 124124,
-//                         equipment: 124,
-//                         costs: 1412343,
-//                         profit: 124124
-//                     },
-//                     nextLevel: 0
-//                 }
-//             },
-//         ]
-//     },
-//
-// ]
-
 const  TableComponent = () => {
     const [isOnLevelHover, setIsOnLevelHover] = useState(false)
     const [data, setData] = useState([])
     const [render, setRender] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
-    console.log("data", data)
-
-    const dataDeleteRow = (id) => {
-
-        // setData((currentValue) => currentValue.filter((row) => row.id !== id))
-    }
-
-    useEffect(() => {
-        console.log("DATA CHANGED", data)
-    }, data)
-
     useEffect( () => {
-        console.log("USE_EFFECT")
-
-        // const send = async () => {
-        //     const response = await fetch(`http://185.244.172.108:8081/v1/outlay-rows/entity/${ID}/row/list`, {
-        //         method: "GET"
-        //     })
-        //         .then( async (res) => {
-        //             const data = await res.json()
-        //             setIsLoading(false)
-        //             // setData(data)
-        //             console.log("DATA FROM BACK",data)
-        //             // return res.json()
-        //             setData(data)
-        //             return data
-        //         }).then((data) => {
-        //             renderRows(data)
-        //         })
-        // }
-        // send()
-
         getAllRows().then((res) => {
             setIsLoading(false)
-            console.log("DATA FROM BACK", res)
-            // setData(res)
             setData(res)
             renderRows(res)
         })
 
     }, [])
 
-    const ar = [1,2,3]
-    const d = ar.map((i) => {
-        if (i == 2) {
-            return
-        }
-        else {
-            return i
-        }
-    })
-
-    console.log(d)
     useEffect(() => {
         if (data.length !== 0) renderRows(data)
     }, [isOnLevelHover])
 
-    // createRow({
-    //     rowName: "child",
-    //     salary: 123,
-    //     equipmentCosts: 123,
-    //     mainCosts: 1234,
-    //     estimatedProfit: 10000,
-    //     parentId: 68667,
-    // })
-
     const updateRows = (id, rowValues, mode = "update") => {
-        // const array = []
-
-        console.log("updateRows", data)
         const go = (rows) => {
-            let ar = rows.map((row) => {
-                let isMatched = {}
-                //
+            let array = rows.map((row) => {
+
                 if (mode === "delete" && row.id === id) {
                     return
                 }
-                //
+
+                let isMatched = {}
                 rowValues.forEach((item, index) => {
                     if (mode === "delete" && index === 0) return
 
@@ -198,69 +118,55 @@ const  TableComponent = () => {
                         console.log("IS MATCHED >>>>>>>>>>>>>", mode, row.id)
                         isMatched = item
                     }
-
                 })
+
                 if(Object.keys(isMatched).length !== 0) {
                     console.log("IF")
-                    if (row.child === undefined) row.child = []
-                    // перестать оставлять детей
                     row = {
                         ...isMatched,
-                        child: row.child
+                        child: row.child || []
                     }
                     row.child = go(row.child)
-                    // array.push(row)
                     return row
                 } else {
                     console.log("ELSE")
-                    // array.push(row)
                     if (row.child && row.child.length !== 0) {
                         console.log("ELSE IF")
                         row.child = go(row.child)
-                        return row
                     }
                     return row
                 }
             })
 
-            if (mode === "delete") {
-                ar = ar.filter(i => i !== undefined)
-            }
-            return ar
+            if (mode === "delete") {array = array.filter(i => i !== undefined)}
+            return array
         }
-        const r = go(data)
-        console.log("GO",r)
-        console.log("NEW DATA", r, data)
-        setData(r)
-        renderRows(r)
+        const dataArray = go(data)
+        console.log("GO",dataArray)
+        console.log("NEW DATA", dataArray, data)
+        setData(dataArray)
+        renderRows(dataArray)
     }
 
-
     const addNewRow = (id) => {
-        // const array = []
-
         console.log("ADD", data)
         const go = (rows) => {
             return rows.map((row) => {
                 if(row.id === id) {
                     console.log("IF")
                     if (row.child === undefined) row.child = []
-                    // перестать оставлять детей
                     row.child = row.child.concat([
                         {
                             ...NEW_ROW,
                             parentId: row.id
                         }
                     ])
-                    // array.push(row)
                     return row
                 } else {
                     console.log("ELSE")
-                    // array.push(row)
                     if (row.child && row.child.length !== 0) {
                         console.log("ELSE IF")
                         row.child = go(row.child)
-                        return row
                     }
                     return row
                 }
@@ -276,27 +182,14 @@ const  TableComponent = () => {
     const countChildren = (row) =>  {
         if (!row.child) return
         let count = 0
-            // row.child.length
-        console.log("ROW", row)
         const go = (row_) => {
-            // console.log("COUNT_CHILDREN_ROW", row_.child)
-            // if (!row_.child.isArray) {
-            //     console.log("RETURN")
-            //     return
-            // }
-            // count = count + row_.child.length
             row_.child.forEach((item) => {
-                console.log("IN FOR EACH")
                 count = count + 1
-                // console.log(item.child)
                 if (!item.child) return
-                console.log(item.child.length)
-                // count = count + item.child.length
                 go(item)
             })
         }
         go(row)
-        console.log("COUNT",count)
         return count
     }
     const renderRows = (rows) => {
@@ -306,7 +199,6 @@ const  TableComponent = () => {
         const go = (rows, level) => {
             let inTheSameLevel = rows.length
             return rows.map((row, index) => {
-                // console.log(row)
                 let childCount = countChildren(row)
                 const currentLevel = level
                 array.push((
@@ -317,39 +209,27 @@ const  TableComponent = () => {
                         indexInChildArray={index}
                         childCount={childCount}
                         isLastInLevel={index === inTheSameLevel - 1}
-                        dataDeleteRow={dataDeleteRow}
                         key={index + row.salary + row + Math.random()}
                         setIsOnLevelHover={setIsOnLevelHover}
                         isOnLevelHover={isOnLevelHover}
                         row={row}
-                        //
                         isNewRow={row.child === undefined}
-                        // isEditing={isEditing}
-                        // setIsEditing={setIsEditing}
                     />
                 ))
                 if (row.child && row.child.length !== 0) {
-                    // console.log(row.child)
                     go(row.child, currentLevel + 1)
                 }
             })
         }
         go(rows, startLevel)
-        console.log("RENDER",array)
-        console.log("CHECK", data)
         setRender(array)
     }
 
-    // if (data.length !== 0) {
-    //     const res = renderRows(data)
-    //     // console.log("RS",res)
-    // }
-
     return (
         <TableContainer component={Paper} sx={{background: "#202124", height: "100vh"}}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                <TableHead>
-                    <StyledTableRow>
+            <Table >
+                <TableHead sx={{height: "41px"}}>
+                    <StyledTableRow >
                         <StyledTableCell width={"110px"}>Уровень</StyledTableCell>
                         <StyledTableCell width={"757px"} align="left">Наименование работ</StyledTableCell>
                         <StyledTableCell width={"200px"} align="left">Основная з/п</StyledTableCell>
@@ -366,31 +246,10 @@ const  TableComponent = () => {
                             row={EMPTY_ROW}
                             isNewRow={true}
                             addNewRow={addNewRow}
-                            // isEditing={isEditing}
-                            // setIsEditing={setIsEditing}
                         />
                         :
-                        // render
                         render
-                    //     data.map((row, index) => {
-                    //         // console.log("RENDER", data)
-                    //         // console.log("RENDER",render)
-                    //         // return renderRows(data)
-                    //     return (
-                    //         <TableRowComponent
-                    //             dataDeleteRow={dataDeleteRow}
-                    //             key={index}
-                    //             setIsOnLevelHover={setIsOnLevelHover}
-                    //             isOnLevelHover={isOnLevelHover}
-                    //             row={row}
-                    //             isNewRow={true}
-                    //             addNewRow={addNewRow}
-                    //             // isEditing={isEditing}
-                    //             // setIsEditing={setIsEditing}
-                    //         />
-                    //     )
-                    // })
-                }
+                    }
                 </TableBody>
             </Table>
         </TableContainer>

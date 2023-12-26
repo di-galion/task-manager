@@ -11,8 +11,7 @@ const Navbar: FC = () => {
                     return (
                         <li
                             key={item.text}
-                            className={cn(`navbar__item`,
-                                {
+                            className={cn(`navbar__item`, {
                                     "navbar__item_active": item.isActive
                                 }
                             )}

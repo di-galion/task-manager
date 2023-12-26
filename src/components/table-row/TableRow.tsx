@@ -1,5 +1,5 @@
 import * as React from "react";
-import {FC, useEffect, useRef, useState} from "react";
+import {FC, useState} from "react";
 import {StyledTableCell, StyledTableRow} from "../table/Table.tsx";
 import "./styles.scss"
 import * as classNames from "classnames";
@@ -9,8 +9,6 @@ import {updateRow} from "../../services/updateRow.ts";
 
 export interface ITableRow {
     row: any,
-    // isEditing: boolean,
-    // setIsEditing: (v: boolean) => void,
     level?: number,
     dataDeleteRow?: (v: number) => void,
     isNewRow?: boolean,
@@ -29,7 +27,6 @@ const TableRowComponent: FC<ITableRow> = (
         row,
         level,
         isNewRow= false,
-        // isEditing,
         isOnLevelHover,
         setIsOnLevelHover,
         indexInChildArray,
@@ -39,7 +36,6 @@ const TableRowComponent: FC<ITableRow> = (
     }
 ) => {
     const [isEditing, setIsEditing] = useState(isNewRow)
-    const inputRef = useRef(null)
     const [rowName, setRowName] = useState<string>(row.rowName)
     const [salary, setSalary] = useState<string | number>(row.salary)
     const [equipmentCosts, setEquipmentCosts] = useState<string | number>(row.equipmentCosts)
@@ -48,21 +44,11 @@ const TableRowComponent: FC<ITableRow> = (
 
     const onTrashClickHandler = async () => {
         const response = await deleteRow(row.id)
-        console.log("DELETE RESPONSE", response)
-        updateRows(row.id, [response.data.current, ...response.data.changed], "delete")
+        updateRows(row.id, [response.data.current, ...response.data.changed], 'delete')
     }
 
-    // useEffect(() => {
-    //     if (isEditing) inputRef.current.addEventListener("keydown", async (e) => {
-    //
-    //
-    //     })
-    // }, [])
-
     const onKeyPressHandler = async (e) => {
-        console.log("onKeyPressHandler",e)
-        if (e.charCode !== 13 || e.key !== "Enter") return
-        console.log("ENTER")
+        if (e.charCode !== 13 || e.key !== 'Enter') return
         setIsEditing(false)
         if (isNewRow) {
             const response = await createRow({
@@ -73,60 +59,47 @@ const TableRowComponent: FC<ITableRow> = (
                 estimatedProfit,
                 parentId: row.parentId,
             })
-            console.log("CREATE RESPONSE", response, row.parentId)
-            updateRows(row.id, [response.data.current, ...response.data.changed], "create")
+            updateRows(row.id, [response.data.current, ...response.data.changed], 'create')
         }
         else {
-            console.log("UPDATE")
             const response = await updateRow(row.id,{
                 rowName,
                 salary,
                 equipmentCosts,
                 mainCosts,
                 estimatedProfit,
-                // parentId: 68458,
             })
-            console.log(response)
             updateRows(row.id, [response.data.current, ...response.data.changed])
         }
     }
-    // console.log(level, isOnLevelHover)
-    console.log(row.rowName, level, childCount)
 
     return (
         <>
             <StyledTableRow
                 onDoubleClick={() => setIsEditing(true)}
-                sx={{
-                    '& > td, & > th': {
-                        height: "60px",
-                        color: "#FFFFFF",
-                        // fontFamily: Roboto,
-                        fontSize: "14px",
-                        fontWeight: 400,
-                        lineHeight: "18px",
-                        letterSpacing: "0.10000000149011612px",
-                        textAlign: "left",
-                    }
-                }}
+                // sx={{
+                //     '& > td, & > th': {
+                //         height: "60px",
+                //         color: "#FFFFFF",
+                //         // fontFamily: Roboto,
+                //         fontSize: "14px",
+                //         fontWeight: 400,
+                //         lineHeight: "18px",
+                //         letterSpacing: "0.10000000149011612px",
+                //         textAlign: "left",
+                //     }
+                // }}
             >
-                <StyledTableCell
-                    align="left"
-                    // sx={{overflow: "scroll"}}
-                >
+                <StyledTableCell align="left">
                     <div
                         className={"level-block"}
-                        style={{marginLeft: `${level * 20}px`}}
-                        onMouseOver={() => {
-                            // console.log("OVER")
-                            setIsOnLevelHover(true)
-                        }}
-                        onMouseLeave={() => {
-                            // console.log("LEAVE")
-                            setIsOnLevelHover(false)
-                        }}
+                        style={{marginLeft: `${level * 20}px`, width: `${20 + 3 * level}px`}}
+                        onMouseOver={() => setIsOnLevelHover(true)}
+                        onMouseLeave={() => setIsOnLevelHover(false)}
                     >
-                        { level !== 0 && level && <div className={classNames("line-first", {"line-first_long": indexInChildArray !== 0})} ></div>}
+                        { level !== 0 && level &&
+                            <div className={classNames("line-first", {"line-first_long": indexInChildArray !== 0})} ></div>
+                        }
                         <div className="icon-block">
                             <img
                                 onClick={() => {
@@ -138,9 +111,9 @@ const TableRowComponent: FC<ITableRow> = (
                                 <img onClick={onTrashClickHandler} className={"level-trash"}  src="/TrashFill.svg" alt="trash"/>
                             }
                         </div>
-                        {/*{row.prevLevel === 1 && <div className={"line-third"}></div>}*/}
-                        {/*{row.prevLevel === 0 && <div className={"line-second"}></div>}*/}
-                        {level !== 0 && childCount  && !isLastInLevel &&  <div className={"line-third"} style={{height: `${40 + 60 * childCount}px`}}></div>}
+                        {level !== 0 && !!childCount  && !isLastInLevel &&
+                            <div className={"line-third"} style={{height: `${40 + 60 * childCount}px`}}></div>
+                        }
                     </div>
                 </StyledTableCell>
 
@@ -204,50 +177,10 @@ const TableRowComponent: FC<ITableRow> = (
                         defaultValue={row.estimatedProfit}
                     />
                 </StyledTableCell>
+
             </StyledTableRow>
         </>
     )
 }
 
 export default TableRowComponent
-
-
-
-
-
-
-
-{/*{Object.values(row.values).map((column, index) => {*/}
-{/*    return (*/}
-{/*        <StyledTableCell key={index}  height={"60px"} component="th" scope="row">*/}
-{/*            {index === 0 ?*/}
-{/*                <div*/}
-{/*                    className={"level-block"}*/}
-{/*                    style={{marginLeft: `${20 * (+column - 1)}px`}}*/}
-{/*                    onMouseOver={() => setIsOnLevelHover(true)}*/}
-{/*                    onMouseLeave={() => setIsOnLevelHover(false)}*/}
-{/*                >*/}
-{/*                    { row.prevLevel === 1 && <div className={"line-first"}></div>}*/}
-{/*                    <div className="icon-block">*/}
-{/*                        <img className={"level-icon"} src="/tableLevelIcon.svg" alt="level"/>*/}
-{/*                        {isOnLevelHover &&*/}
-{/*                            <img className={"level-trash"}  src="/TrashFill.svg" alt="trash"/>*/}
-{/*                        }*/}
-{/*                    </div>*/}
-{/*                    /!*{row.prevLevel === 1 && <div className={"line-third"}></div>}*!/*/}
-{/*                    {row.prevLevel === 0 && <div className={"line-second"}></div>}*/}
-{/*                </div>*/}
-{/*                :*/}
-{/*                <input*/}
-{/*                    id={column}*/}
-{/*                    name={column}*/}
-{/*                    className={classNames("cell-input", {*/}
-{/*                        "cell-input_editing": isEditing*/}
-{/*                    })}*/}
-{/*                    disabled={!isEditing}*/}
-{/*                    defaultValue={column}*/}
-{/*                />*/}
-{/*            }*/}
-{/*        </StyledTableCell>*/}
-{/*    )*/}
-{/*})}*/}
