@@ -1,23 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
+import Header from "./components/header/Header.tsx";
+import Navbar from "./components/navbar/Navbar.tsx";
+// import {Table} from "@mui/material";
+import Table from "./components/table/Table.tsx";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <Header/>
+        <div style={{display: "flex"}}>
+            <aside style={{width: "234px"}}>
+                <Navbar />
+            </aside>
+            <main style={{flexGrow: "1"}}>
+                <Table />
+            </main>
+        </div>
     </div>
   );
 }
