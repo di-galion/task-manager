@@ -203,23 +203,55 @@ const  TableComponent = () => {
         renderRows(r)
     }
 
+    const countChildren = (row) =>  {
+        if (!row.child) return
+        let count = 0
+            // row.child.length
+        console.log("ROW", row)
+        const go = (row_) => {
+            // console.log("COUNT_CHILDREN_ROW", row_.child)
+            // if (!row_.child.isArray) {
+            //     console.log("RETURN")
+            //     return
+            // }
+            // count = count + row_.child.length
+            row_.child.forEach((item) => {
+                console.log("IN FOR EACH")
+                count = count + 1
+                // console.log(item.child)
+                if (!item.child) return
+                console.log(item.child.length)
+                // count = count + item.child.length
+                go(item)
+            })
+        }
+        go(row)
+        console.log("COUNT",count)
+        return count
+    }
     const renderRows = (rows) => {
+        if (!rows) return
         let startLevel = 0
         const array = []
         const go = (rows, level) => {
+            let inTheSameLevel = rows.length
             return rows.map((row, index) => {
                 // console.log(row)
+                let childCount = countChildren(row)
                 const currentLevel = level
                 array.push((
                     <TableRowComponent
                         addNewRow={addNewRow}
                         level={currentLevel}
                         indexInChildArray={index}
+                        childCount={childCount}
+                        isLastInLevel={index === inTheSameLevel - 1}
                         dataDeleteRow={dataDeleteRow}
                         key={index + row.salary + row + Math.random()}
                         setIsOnLevelHover={setIsOnLevelHover}
                         isOnLevelHover={isOnLevelHover}
                         row={row}
+                        isNewRow={row.child === undefined}
                         // isEditing={isEditing}
                         // setIsEditing={setIsEditing}
                     />

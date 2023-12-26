@@ -40,6 +40,8 @@
   //margin-left: 11px;
   display: flex;
   position: relative;
+  //
+  max-width: 40px;
 }
 
 .icon-block {
@@ -53,6 +55,7 @@
 
 .line-first {
   //background-color: white;
+  z-index: 10;
   position: absolute;
   border-bottom: 1px solid white;
   border-left: 1px solid white;
@@ -79,10 +82,12 @@
 .line-third {
   //background-color: white;
   position: absolute;
-  border-bottom: 1px solid white;
+  z-index: 10;
+  //border-bottom: 1px solid white;
   border-left: 1px solid white;
-  width: 11px;
-  height: 35px;
-  top: 20px;
-  left: 19px;
+  width: 13px;
+  height: 100px;
+  //bottom: 50%;
+  top: 10px;
+  left: -7px;
 }

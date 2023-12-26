@@ -1,5 +1,5 @@
 import * as React from "react";
-import {FC, useRef, useState} from "react";
+import {FC, useEffect, useRef, useState} from "react";
 import {StyledTableCell, StyledTableRow} from "../table/Table.tsx";
 import "./styles.scss"
 import * as classNames from "classnames";
@@ -18,6 +18,8 @@ export interface ITableRow {
     isOnLevelHover: boolean,
     setIsOnLevelHover: (v: boolean) => void,
     indexInChildArray?: number
+    isLastInLevel?: boolean,
+    childCount?: number
 }
 const TableRowComponent: FC<ITableRow> = (
     {
@@ -29,7 +31,9 @@ const TableRowComponent: FC<ITableRow> = (
         // isEditing,
         isOnLevelHover,
         setIsOnLevelHover,
-        indexInChildArray
+        indexInChildArray,
+        isLastInLevel,
+        childCount
     }
 ) => {
     const [isEditing, setIsEditing] = useState(isNewRow)
@@ -45,33 +49,39 @@ const TableRowComponent: FC<ITableRow> = (
         dataDeleteRow(row.id)
     }
 
-    if (isEditing) window.addEventListener("keydown", async (e) => {
-        if (e.keyCode !== 13) return
-        setIsEditing(false)
-        if (isNewRow) {
-            createRow({
-                rowName,
-                salary,
-                equipmentCosts,
-                mainCosts,
-                estimatedProfit,
-                parentId: row.parentId,
-            })
-        }
-        else {
-            updateRow(row.id,{
-                rowName,
-                salary,
-                equipmentCosts,
-                mainCosts,
-                estimatedProfit,
-                // parentId: 68458,
-            })
-        }
+    useEffect(() => {
+        if (isEditing) rowRef.current.addEventListener("keydown", async (e) => {
+            if (e.keyCode !== 13 || e.code !== "Enter") return
+            console.log("ENTER")
+            setIsEditing(false)
+            if (isNewRow) {
+                createRow({
+                    rowName,
+                    salary,
+                    equipmentCosts,
+                    mainCosts,
+                    estimatedProfit,
+                    parentId: row.parentId,
+                })
 
-    })
+            }
+            else {
+                console.log("UPDATE")
+                updateRow(row.id,{
+                    rowName,
+                    salary,
+                    equipmentCosts,
+                    mainCosts,
+                    estimatedProfit,
+                    // parentId: 68458,
+                })
+            }
+
+        })
+    }, [])
 
     // console.log(level, isOnLevelHover)
+    console.log(row.rowName, level, childCount)
 
     return (
         <>
@@ -93,7 +103,7 @@ const TableRowComponent: FC<ITableRow> = (
             >
                 <StyledTableCell
                     align="left"
-                    // sx={{overflow: "hidden"}}
+                    // sx={{overflow: "scroll"}}
                 >
                     <div
                         className={"level-block"}
@@ -109,13 +119,19 @@ const TableRowComponent: FC<ITableRow> = (
                     >
                         { level !== 0 && level && <div className={classNames("line-first", {"line-first_long": indexInChildArray !== 0})} ></div>}
                         <div className="icon-block">
-                            <img onClick={() => addNewRow(row.id)} className={"level-icon"} src="/tableLevelIcon.svg" alt="level"/>
+                            <img
+                                onClick={() => {
+                                    if (!isNewRow) addNewRow(row.id)
+                                }}
+                                className={"level-icon"} src="/tableLevelIcon.svg" alt="level"
+                            />
                             {isOnLevelHover && !isEditing &&
                                 <img onClick={onTrashClickHandler} className={"level-trash"}  src="/TrashFill.svg" alt="trash"/>
                             }
                         </div>
                         {/*{row.prevLevel === 1 && <div className={"line-third"}></div>}*/}
                         {/*{row.prevLevel === 0 && <div className={"line-second"}></div>}*/}
+                        {level !== 0 && childCount  && !isLastInLevel &&  <div className={"line-third"} style={{height: `${40 + 60 * childCount}px`}}></div>}
                     </div>
                 </StyledTableCell>
 
