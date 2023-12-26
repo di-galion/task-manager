@@ -99,11 +99,11 @@ const TableRowComponent: FC<ITableRow> = (
                         className={"level-block"}
                         style={{marginLeft: `${level * 20}px`}}
                         onMouseOver={() => {
-                            console.log("OVER")
+                            // console.log("OVER")
                             setIsOnLevelHover(true)
                         }}
                         onMouseLeave={() => {
-                            console.log("LEAVE")
+                            // console.log("LEAVE")
                             setIsOnLevelHover(false)
                         }}
                     >

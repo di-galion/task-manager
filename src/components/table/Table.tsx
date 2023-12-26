@@ -113,7 +113,7 @@ const  TableComponent = () => {
     const [render, setRender] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
-    console.log("data", data)
+    // console.log("data", data)
 
     const dataDeleteRow = (id) => {
         setData((currentValue) => currentValue.filter((row) => row.id !== id))
@@ -167,11 +167,11 @@ const  TableComponent = () => {
     // })
 
     const addNewRow = (id) => {
-        const array = []
+        // const array = []
 
         console.log("ADD", data)
         const go = (rows) => {
-            rows.forEach((row) => {
+            return rows.map((row) => {
                 if(row.id === id) {
                     console.log("IF")
                     if (row.child === undefined) row.child = []
@@ -182,22 +182,25 @@ const  TableComponent = () => {
                             parentId: row.id
                         }
                     ])
-                    array.push(row)
+                    // array.push(row)
+                    return row
                 } else {
                     console.log("ELSE")
-                    array.push(row)
+                    // array.push(row)
                     if (row.child && row.child.length !== 0) {
                         console.log("ELSE IF")
-                        go(row.child)
+                        row.child = go(row.child)
+                        return row
                     }
+                    return row
                 }
             })
         }
-        go(data)
-        console.log("NEW DATA", array, data)
-        setData(array)
-        renderRows(array)
-        // setData(array)
+        const r = go(data)
+        console.log("GO",r)
+        console.log("NEW DATA", r, data)
+        setData(r)
+        renderRows(r)
     }
 
     const renderRows = (rows) => {
