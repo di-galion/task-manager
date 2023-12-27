@@ -1,3 +1,4 @@
+export const eID = 114666
 
 export const NAVBAR_ITEMS = [
     {
@@ -59,16 +60,17 @@ export const NAVBAR_ITEMS = [
 ]
 
 export const NEW_ROW = {
-    "equipmentCosts": 0,
-    "estimatedProfit": 0,
-    "machineOperatorSalary": 0,
-    "mainCosts": 0,
-    "materials": 0,
-    "mimExploitation": 0,
-    "overheads": 0,
-    "rowName": "TEST NAME",
-    "salary": 0,
-    "supportCosts": 0,
+    "equipmentCosts": "",
+    "estimatedProfit": "",
+    "machineOperatorSalary": "",
+    "mainCosts": "",
+    "materials": "",
+    "mimExploitation": "",
+    "overheads": "",
+    "rowName": "",
+    "salary": "",
+    "supportCosts": "",
+    total: 0,
     id: 0,
-    // child: true
 }
+

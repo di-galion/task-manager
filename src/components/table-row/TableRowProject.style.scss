@@ -27,8 +27,6 @@
   }
 }
 
-
-
 .level-icon {
 }
 
@@ -63,26 +61,12 @@
   }
 }
 
-.line-second {
-  //background-color: white;
-  position: absolute;
-  border-bottom: 1px solid white;
-  border-left: 1px solid white;
-  width: 13px;
-  height: 60px;
-  bottom: 50%;
-  left: -7px;
-}
-
 .line-third {
-  //background-color: white;
   position: absolute;
   z-index: 10;
-  //border-bottom: 1px solid white;
   border-left: 1px solid #C6C6C6;
   width: 13px;
   height: 100px;
-  //bottom: 50%;
   top: 10px;
   left: -7px;
 }

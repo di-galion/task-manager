@@ -1,7 +1,6 @@
-import Header from "./components/header/Header.tsx";
-import Navbar from "./components/navbar/Navbar.tsx";
-// import {Table} from "@mui/material";
-import Table from "./components/table/Table.tsx";
+import {Header} from "./components/header/index";
+import {Navbar} from "./components/navbar/index";
+import {TableProject} from "./components/table-project/index"
 
 function App() {
   return (
@@ -12,7 +11,7 @@ function App() {
                 <Navbar />
             </aside>
             <main style={{flexGrow: "1"}}>
-                <Table />
+                <TableProject />
             </main>
         </div>
     </div>

@@ -1,22 +1,19 @@
 import axios from "axios";
-import {ID} from "../components/table/Table.tsx";
+import {eID} from "../data";
+import {changeEmptyStringTpZero} from "./createRow";
 
-export const updateRow = async (rID, data) => {
+export const updateRow = async (rID: number, data: any) => {
+    console.log("UPDATE", data)
     try {
+        const body = changeEmptyStringTpZero(data)
         return  axios({
-            url: `http://185.244.172.108:8081/v1/outlay-rows/entity/${ID}/row/${rID}/update`,
-            method: "POST",
+            url: `http://185.244.172.108:8081/v1/outlay-rows/entity/${eID}/row/${rID}/update`,
+            method: 'POST',
             data: {
-                "machineOperatorSalary": 0,
-                "materials": 0,
-                "mimExploitation": 0,
-                "overheads": 0,
-                "supportCosts": 0,
-                ...data
+                ...body
             }
         })
-
-    } catch (e) {
+    } catch (e: any) {
         return console.log(e.message)
     }
 }
