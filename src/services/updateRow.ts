@@ -1,18 +1,20 @@
 import axios from "axios";
-import {eID} from "../data";
-import {changeEmptyStringTpZero} from "./createRow";
+import {BASE_URL, eID} from "../data";
+import {changeEmptyStringTpZero} from "./services.utils";
+import {TypeAxiosResponse} from "./services.types";
 
-export const updateRow = async (rID: number, data: any) => {
-    console.log("UPDATE", data)
+export  async function updateRow(rID: number, data: any) {
     try {
         const body = changeEmptyStringTpZero(data)
-        return  axios({
-            url: `http://185.244.172.108:8081/v1/outlay-rows/entity/${eID}/row/${rID}/update`,
+        const {data: dataFromBackend} = await axios<TypeAxiosResponse>({
+            url: `${BASE_URL}v1/outlay-rows/entity/${eID}/row/${rID}/update`,
             method: 'POST',
             data: {
                 ...body
             }
         })
+
+        return [dataFromBackend.current].concat(dataFromBackend.changed)
     } catch (e: any) {
         return console.log(e.message)
     }

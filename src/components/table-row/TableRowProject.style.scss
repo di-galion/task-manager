@@ -27,8 +27,7 @@
   }
 }
 
-.level-icon {
-}
+.level-icon {}
 
 .level-trash {
   margin-left: 3px;
@@ -47,7 +46,7 @@
   padding: 0 2px;
 }
 
-.line-first {
+.line-with-prev {
   z-index: 10;
   position: absolute;
   border-bottom: 1px solid #C6C6C6;
@@ -56,12 +55,14 @@
   height: 52px;
   bottom: 50%;
   left: -7px;
+
   &_long {
     height: 60px;
   }
+
 }
 
-.line-third {
+.line-with-next {
   position: absolute;
   z-index: 10;
   border-left: 1px solid #C6C6C6;

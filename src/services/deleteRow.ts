@@ -1,12 +1,15 @@
 import axios from "axios";
-import {eID} from "../data";
+import {BASE_URL, eID} from "../data";
+import {TypeAxiosResponse} from "./services.types";
 
-export const deleteRow = (rID: number) => {
+export  async function deleteRow(rID: number) {
     try {
-        return axios({
-            url: `http://185.244.172.108:8081/v1/outlay-rows/entity/${eID}/row/${rID}/delete`,
+        const {data: dataFromBackend} = await axios<TypeAxiosResponse>({
+            url: `${BASE_URL}v1/outlay-rows/entity/${eID}/row/${rID}/delete`,
             method: 'DELETE',
         })
+
+        return [dataFromBackend.current].concat(dataFromBackend.changed)
     } catch (e: any) {
         return console.log(e.message)
     }

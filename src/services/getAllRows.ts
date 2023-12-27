@@ -1,10 +1,10 @@
 import axios from "axios";
-import {eID} from "../data";
+import {BASE_URL, eID} from "../data";
 
-export const getAllRows = async () => {
+export  async function getAllRows() {
     try {
         const response = await axios({
-            url: `http://185.244.172.108:8081/v1/outlay-rows/entity/${eID}/row/list`,
+            url: `${BASE_URL}v1/outlay-rows/entity/${eID}/row/list`,
             method: 'GET'
         })
         return response.data

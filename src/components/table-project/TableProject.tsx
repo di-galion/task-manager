@@ -1,51 +1,32 @@
-import * as React from 'react';
 import {useEffect, useState} from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import Paper from '@mui/material/Paper';
-import {TableRowProject} from "../table-row/index";
+import {TableRowProject} from "../table-row";
+import {StyledTableRow, StyledTableCell} from "../ui"
+import {EnumUpdateRowMode} from "../table-row";
+import {TypeNewRow, TypeRowInArray, TypeRowResponse, TypeUpdateRow} from "./TableProject.types";
 import {NEW_ROW} from "../../data";
-import {getAllRows} from "../../services/getAllRows";
-import {EnumUpdateRowMode} from "../table-row/index";
-import StyledTableRow from "../ui/StyledTableRow";
-import StyledTableCell from "../ui/StyledTableCell";
-import {TypeNewRow, TypeRowRequest, TypeRowResponse, TypeUpdateRow} from "./TableProject.types";
-import {useGetListQuery} from "../../services/api";
+import {useGetListQuery} from "../../store";
 
 export const  TableProject = () => {
     const [isOnLevelHover, setIsOnLevelHover] = useState(false)
     const [data, setData] = useState<any>([])
     const [render, setRender] = useState([])
 
-    console.log("COMPONENT IS RENDERED", data)
-    const {data: dataQuery, isLoading: isLoadingM} = useGetListQuery("")
-
-    // useEffect( () => {
-    //     getAllRows().then((res) => {
-    //         console.log("DATA FROM BACK", res)
-    //         setIsLoading(false)
-    //         setData(res)
-    //         renderRows(res)
-    //     })
-    //
-    // }, [])
+    const {data: dataQuery, isLoading: isLoadingM} = useGetListQuery('')
 
     useEffect(() => {
-        console.log(data)
         if (data?.length === 0 || !data) {
-            console.log(isLoadingM, dataQuery)
-            console.log("DATA FROM BACK", dataQuery)
             setData(dataQuery)
             renderRows(dataQuery)
         }
-        // if (data && data?.length !== 0) return
     }, [isLoadingM, dataQuery])
 
     useEffect(() => {
         if (data === undefined) return
-        console.log("DATA is UPDATE", data)
         renderRows(data)
     }, [data])
 
@@ -54,38 +35,34 @@ export const  TableProject = () => {
     }, [isOnLevelHover])
 
     const updateRows = ({id, rowValues, mode = EnumUpdateRowMode.UPDATE}: TypeUpdateRow) => {
-        console.log("DATA updateRows", data)
-        console.log("ROW_VALUES", rowValues)
-        const go = (rows: (TypeRowResponse | TypeNewRow)[]) => {
-            console.log("ROWS", rows)
-            if (!rows) return
+        const go = (rows: TypeRowInArray[]): (TypeRowResponse | TypeNewRow)[] => {
+            // if (!rows) return
 
             let array = rows.map((row) => {
                 const rowWritable = {...row}
-                console.log("ROW_WRITABLE", rowWritable)
+
                 if (mode === EnumUpdateRowMode.DELETE && rowWritable.id === id) {
                     return
                 }
 
                 let isMatched = {}
-                rowValues.forEach((item, index) => {
+
+                rowValues.forEach((item: TypeRowInArray, index: number) => {
                     if (mode === EnumUpdateRowMode.DELETE && index === 0) return
-                    console.log(rowWritable.id === item.id, mode === EnumUpdateRowMode.CREATE && rowWritable.id === 0 && index === 0)
+                    console.log(row, data, item)
                     if (rowWritable.id === item.id || (mode === EnumUpdateRowMode.CREATE && rowWritable.id === 0 && index === 0)) {
-                        console.log("ROW_ID=0",item)
                         isMatched = item
                     }
                 })
 
                 if(Object.keys(isMatched).length !== 0) {
-                    console.log("IS MATCHED >>>>", isMatched, rowWritable)
-                    //@ts-ignore
                     const response  = {
                         ...isMatched,
                         child: rowWritable.child || []
                     }
+
                     response.child = go(response.child)
-                    console.log("ROW_WRITABLE_CHILD", response)
+
                     return response
                 } else {
                     if (rowWritable.child && rowWritable.child.length !== 0) {
@@ -94,44 +71,32 @@ export const  TableProject = () => {
                     return rowWritable
                 }
             })
-            console.log("ARRAY In GO FIRSt",array)
             if (mode === EnumUpdateRowMode.DELETE) {array = array.filter(i => i !== undefined)}
-            console.log("ARRAY In GO SECOND",array)
+           //@ts-ignore
             return array
         }
         const dataArray = go(data)
 
-        console.log("DATA ARRAY AFTER UPDATE", dataArray)
-        // setData([])
         setData(dataArray)
-        // renderRows(dataArray)
     }
 
 
     const addNewRow = (id: number) => {
-        console.log("RENDER_ROWS", data)
-        const go = (rows: (TypeRowResponse | TypeNewRow)[]) => {
+        const go = (rows: (TypeRowResponse | TypeNewRow)[] | undefined) => {
             if (!rows) return
             return rows.map((row) => {
                 const rowWritable = {...row}
+
                 if(row.id === id) {
                     if (row.child === undefined) rowWritable.child = []
 
+                    //@ts-ignore
                     rowWritable.child = [...row.child, {...NEW_ROW, parentId: row.id}]
-                    console.log("Child", rowWritable)
-                    // @ts-ignore
-                    // rowWritable.child = rowWritable.child.concat([
-                    //     {
-                    //         ...NEW_ROW,
-                    //         parentId: rowWritable.id,
-                    //         // total: 0,
-                    //         // child: []
-                    //     }
-                    // ])
+
                     return rowWritable
                 } else {
                     if (row.child && row.child.length !== 0) {
-                        console.log("IF IN renderRows")
+
                         rowWritable.child = go(rowWritable.child)
                     }
                     return rowWritable
@@ -140,7 +105,6 @@ export const  TableProject = () => {
         }
         const dataArray = go(data)
         setData(dataArray)
-        // renderRows(dataArray)
     }
 
     const countChildren = (row: (TypeRowResponse | TypeNewRow)) =>  {
@@ -148,7 +112,8 @@ export const  TableProject = () => {
 
         let count = 0
         const go = (row_: (TypeRowResponse | TypeNewRow)) => {
-            row_.child.forEach((item: any) => {
+            if (!row_.child) return
+            row_.child.forEach((item) => {
                 count = count + 1
                 if (!item.child) return
                 go(item)
@@ -160,7 +125,6 @@ export const  TableProject = () => {
     }
     const renderRows = (rows: any) => {
         if (!rows) return
-        console.log("RENDER_ROWS", rows)
         let startLevel = 0
         const array: any = []
 
@@ -170,7 +134,6 @@ export const  TableProject = () => {
             return rows.map((row, index) => {
                 let childCount = countChildren(row)
                 const currentLevel = level
-                console.log("RENDER ROWS IS NEW ROW", row, row.rowName === '')
                 array.push((
                     <TableRowProject
                         updateRows={updateRows}
@@ -202,12 +165,12 @@ export const  TableProject = () => {
             <Table >
                 <TableHead >
                     <StyledTableRow >
-                        <StyledTableCell width={"110px"}>Уровень</StyledTableCell>
-                        <StyledTableCell width={"757px"} align="left">Наименование работ</StyledTableCell>
-                        <StyledTableCell width={"200px"} align="left">Основная з/п</StyledTableCell>
-                        <StyledTableCell width={"200px"} align="left">Оборудование</StyledTableCell>
-                        <StyledTableCell width={"200px"} align="left">Накладные расходы</StyledTableCell>
-                        <StyledTableCell width={"200px"} align="left">Сметная прибыль</StyledTableCell>
+                        <StyledTableCell width={'110px'}>Уровень</StyledTableCell>
+                        <StyledTableCell width={'757px'} align='left'>Наименование работ</StyledTableCell>
+                        <StyledTableCell width={'200px'} align='left'>Основная з/п</StyledTableCell>
+                        <StyledTableCell width={'200px'} align='left'>Оборудование</StyledTableCell>
+                        <StyledTableCell width={'200px'} align='left'>Накладные расходы</StyledTableCell>
+                        <StyledTableCell width={'200px'} align='left'>Сметная прибыль</StyledTableCell>
                     </StyledTableRow>
                 </TableHead>
                 <TableBody>

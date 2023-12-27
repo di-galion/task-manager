@@ -1,4 +1,4 @@
-import {TypeRowResponse, TypeUpdateRow} from "../table-project/TableProject.types";
+import {TypeUpdateRow} from "../table-project";
 
 export interface ITableRow {
     row: any,
@@ -13,13 +13,9 @@ export interface ITableRow {
     updateRows?: ({id, rowValues, mode}: TypeUpdateRow) => void
 }
 
-export type TypeAxiosResponse = {
-    current: TypeRowResponse,
-    changed: TypeRowResponse[]
-}
 
 export enum EnumUpdateRowMode {
-    UPDATE = "update",
-    DELETE = "delete",
-    CREATE = "create"
+    UPDATE = 'update',
+    DELETE = 'delete',
+    CREATE = 'create'
 }

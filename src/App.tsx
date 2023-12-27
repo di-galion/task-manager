@@ -1,6 +1,6 @@
-import {Header} from "./components/header/index";
-import {Navbar} from "./components/navbar/index";
-import {TableProject} from "./components/table-project/index"
+import {Header} from "./components/header";
+import {Navbar} from "./components/navbar";
+import {TableProject} from "./components/table-project"
 
 function App() {
   return (

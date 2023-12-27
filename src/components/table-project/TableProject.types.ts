@@ -1,22 +1,4 @@
-import {EnumUpdateRowMode} from "../table-row/TableRowProject.types";
-
-
-export type TypeRowRequest = {
-    equipmentCosts: number,
-    estimatedProfit: number,
-    id: number,
-    machineOperatorSalary: number,
-    mainCosts: number,
-    materials: number,
-    mimExploitation: number,
-    overheads: number,
-    rowName: string,
-    salary: number,
-    supportCosts: number,
-    parentId: number,
-    child: any
-        // TypeRowRequest[]
-}
+import {EnumUpdateRowMode} from "../table-row";
 
 export type TypeRowResponse = {
     equipmentCosts: number,
@@ -31,32 +13,31 @@ export type TypeRowResponse = {
     salary: number,
     parentId: number
     supportCosts: number,
-    child: any
-        // (TypeRowResponse | TypeNewRow)[]
+    child: TypeRowInArray[] | []
     total: number
 }
 
 export type TypeNewRow = {
-    equipmentCosts: string,
-    estimatedProfit: string,
+    equipmentCosts: string | number,
+    estimatedProfit: string | number,
     id: number,
-    machineOperatorSalary: string,
-    mainCosts: string,
-    materials: string,
-    mimExploitation: string,
-    overheads: string,
+    machineOperatorSalary: string | number,
+    mainCosts: string | number,
+    materials: string | number,
+    mimExploitation: string | number,
+    overheads: string | number,
     rowName:string,
-    salary: string,
+    salary: string | number,
     parentId: number
-    supportCosts: number,
-    child: any,
-    total: number,
+    supportCosts: string | number,
+    child?:  [],
+    total: string | number,
 }
 
-
+export type TypeRowInArray = TypeNewRow | TypeRowResponse
 
 export type TypeUpdateRow = {
     id: number,
-    rowValues: (TypeRowResponse | TypeNewRow)[],
+    rowValues: any,
     mode?: EnumUpdateRowMode
 }
