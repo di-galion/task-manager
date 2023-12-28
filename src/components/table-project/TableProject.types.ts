@@ -28,7 +28,7 @@ export type TypeNewRow = {
     overheads: string | number,
     rowName:string,
     salary: string | number,
-    parentId: number
+    parentId?: number
     supportCosts: string | number,
     child?:  [],
     total: string | number,
@@ -37,7 +37,7 @@ export type TypeNewRow = {
 export type TypeRowInArray = TypeNewRow | TypeRowResponse
 
 export type TypeUpdateRow = {
-    id: number,
+    id?: number,
     rowValues: any,
     mode?: EnumUpdateRowMode
 }

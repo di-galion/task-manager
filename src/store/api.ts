@@ -1,7 +1,6 @@
-import {createApi, EndpointBuilder, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
+import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import {BASE_URL, eID, NEW_ROW} from "../data";
 import {TypeRowResponse} from "../components/table-project";
-
 
 export const api = createApi({
     reducerPath: 'mainApi',
@@ -9,25 +8,25 @@ export const api = createApi({
         baseUrl: BASE_URL
     }),
     endpoints: (build) =>  ({
-        getList: build.query<TypeRowResponse, string>({
+        getList: build.query<TypeRowResponse[], string>({
             query: () => `v1/outlay-rows/entity/${eID}/row/list`
         }),
-        createRow: build.mutation({
-            query: (data) => ({
-                url: `v1/outlay-rows/entity/${eID}/row/create`,
-                method: "POST",
-                data: {
-                    ...NEW_ROW,
-                    ...data
-                }
-            })
-        }),
-        deleteRow: build.mutation({
-            query: (rID) => ({
-                url: `v1/outlay-rows/entity/${eID}/row/${rID}/delete`,
-                method: 'DELETE',
-            })
-        }),
+        // createRow: build.mutation({
+        //     query: (data) => ({
+        //         url: `v1/outlay-rows/entity/${eID}/row/create`,
+        //         method: "POST",
+        //         data: {
+        //             ...NEW_ROW,
+        //             ...data
+        //         }
+        //     })
+        // }),
+        // deleteRow: build.mutation({
+        //     query: (rID) => ({
+        //         url: `v1/outlay-rows/entity/${eID}/row/${rID}/delete`,
+        //         method: 'DELETE',
+        //     })
+        // }),
         // updateRow: build.mutation({
         //     query: (rID, data) => ({
         //         url: `v1/outlay-rows/entity/${eID}/row/${rID}/update`,
@@ -40,4 +39,4 @@ export const api = createApi({
     })
 })
 
-export const {useGetListQuery, useCreateRowMutation, useDeleteRowMutation} = api
+export const {useGetListQuery} = api

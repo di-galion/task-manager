@@ -44,12 +44,10 @@ export const TableRowProject: FC<ITableRow> = (
                 estimatedProfit,
                 parentId: row.parentId,
             })
-            console.log("CREATE", rowArray)
+
             updateRows({id: row.id, rowValues: rowArray, mode: EnumUpdateRowMode.CREATE})
         }
         else {
-            console.log(rowName, salary, equipmentCosts, mainCosts, estimatedProfit, row.id)
-
             const rowsArray = await updateRow(row.id,{
                 'machineOperatorSalary': 0,
                 'materials': 0,
@@ -63,7 +61,8 @@ export const TableRowProject: FC<ITableRow> = (
                 estimatedProfit,
                 parentId: row.parentId
             })
-            updateRows({id: row.id, rowValues: rowsArray})
+
+            updateRows({rowValues: rowsArray})
         }
     }
 
@@ -81,7 +80,13 @@ export const TableRowProject: FC<ITableRow> = (
                         onMouseLeave={() => setIsOnLevelHover(false)}
                     >
                         { level !== 0 && level &&
-                            <div className={classNames('line-with-prev', {'line-with-prev_long': indexInChildArray !== 0})} ></div>
+                            <div
+                                className={
+                                    classNames('line line__with-prev', {
+                                        'line__with-prev_long': indexInChildArray !== 0
+                                    })
+                                }
+                            ></div>
                         }
                         <div className='icon-block'>
                             <img
@@ -89,11 +94,14 @@ export const TableRowProject: FC<ITableRow> = (
                                 className={'level-icon'} src='/tableLevelIcon.svg' alt='level'
                             />
                             {isOnLevelHover && !isEditing &&
-                                <img onClick={onTrashClickHandler} className={'level-trash'} src='/trashFillIcon.svg' alt='trash'/>
+                                <img
+                                    onClick={onTrashClickHandler}
+                                    className={'level-trash'} src='/trashFillIcon.svg' alt='trash'
+                                />
                             }
                         </div>
                         {level !== 0 && !!childCount  && !isLastInLevel &&
-                            <div className={'line-with-next'} style={{height: `${40 + 60 * childCount}px`}}></div>
+                            <div className={'line line__with-next'} style={{height: `${40 + 60 * childCount}px`}}></div>
                         }
                     </div>
                 </StyledTableCell>

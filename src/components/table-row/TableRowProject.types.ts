@@ -13,7 +13,6 @@ export interface ITableRow {
     updateRows?: ({id, rowValues, mode}: TypeUpdateRow) => void
 }
 
-
 export enum EnumUpdateRowMode {
     UPDATE = 'update',
     DELETE = 'delete',

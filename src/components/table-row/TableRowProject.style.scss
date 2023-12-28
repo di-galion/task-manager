@@ -22,7 +22,6 @@
     border: 1px solid #414144;
     color: #71717A;
     background-color:  #202124;
-    //font-family: Roboto;
     font-size: 14px;
   }
 }
@@ -46,28 +45,25 @@
   padding: 0 2px;
 }
 
-.line-with-prev {
+.line {
   z-index: 10;
   position: absolute;
-  border-bottom: 1px solid #C6C6C6;
-  border-left: 1px solid #C6C6C6;
-  width: 13px;
-  height: 52px;
-  bottom: 50%;
   left: -7px;
+  width: 13px;
+  border-left: 1px solid #C6C6C6;
 
-  &_long {
-    height: 60px;
+  &__with-next {
+    height: 100px;
+    top: 10px;
   }
 
-}
+  &__with-prev {
+    border-bottom: 1px solid #C6C6C6;
+    height: 52px;
+    bottom: 50%;
 
-.line-with-next {
-  position: absolute;
-  z-index: 10;
-  border-left: 1px solid #C6C6C6;
-  width: 13px;
-  height: 100px;
-  top: 10px;
-  left: -7px;
+    &_long {
+      height: 60px;
+    }
+  }
 }

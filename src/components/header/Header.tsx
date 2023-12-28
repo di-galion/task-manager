@@ -1,4 +1,3 @@
-import * as React from 'react';
 import "./Header.style.scss"
 import {FC} from "react";
 

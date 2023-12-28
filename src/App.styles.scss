@@ -1,0 +1,11 @@
+.content-container {
+  display: flex;
+
+  & > aside {
+    width: 234px;
+  }
+
+  & > main {
+    flex-grow: 1;
+  }
+}

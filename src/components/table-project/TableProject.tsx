@@ -1,11 +1,9 @@
 import {useEffect, useState} from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import Paper from '@mui/material/Paper';
 import {TableRowProject} from "../table-row";
-import {StyledTableRow, StyledTableCell} from "../ui"
+import {StyledTableRow, StyledTableCell, StyledTableContainer} from "../ui"
 import {EnumUpdateRowMode} from "../table-row";
 import {TypeNewRow, TypeRowInArray, TypeRowResponse, TypeUpdateRow} from "./TableProject.types";
 import {NEW_ROW} from "../../data";
@@ -20,13 +18,18 @@ export const  TableProject = () => {
 
     useEffect(() => {
         if (data?.length === 0 || !data) {
+            if (!isLoadingM && dataQuery?.length === 0) {
+                setData([NEW_ROW])
+                renderRows([NEW_ROW])
+                return
+            }
             setData(dataQuery)
             renderRows(dataQuery)
         }
     }, [isLoadingM, dataQuery])
 
     useEffect(() => {
-        if (data === undefined) return
+        if (!data) return
         renderRows(data)
     }, [data])
 
@@ -34,23 +37,18 @@ export const  TableProject = () => {
         if (data && data.length !== 0) renderRows(data)
     }, [isOnLevelHover])
 
-    const updateRows = ({id, rowValues, mode = EnumUpdateRowMode.UPDATE}: TypeUpdateRow) => {
-        const go = (rows: TypeRowInArray[]): (TypeRowResponse | TypeNewRow)[] => {
-            // if (!rows) return
-
+    const updateRows = ({id = -1, rowValues, mode = EnumUpdateRowMode.UPDATE}: TypeUpdateRow) => {
+        const go = (rows: TypeRowInArray[]): TypeRowInArray[] => {
             let array = rows.map((row) => {
                 const rowWritable = {...row}
 
-                if (mode === EnumUpdateRowMode.DELETE && rowWritable.id === id) {
-                    return
-                }
+                if (mode === EnumUpdateRowMode.DELETE && rowWritable.id === id) return
 
                 let isMatched = {}
-
                 rowValues.forEach((item: TypeRowInArray, index: number) => {
                     if (mode === EnumUpdateRowMode.DELETE && index === 0) return
-                    console.log(row, data, item)
-                    if (rowWritable.id === item.id || (mode === EnumUpdateRowMode.CREATE && rowWritable.id === 0 && index === 0)) {
+                    if (rowWritable.id === item.id
+                        || (mode === EnumUpdateRowMode.CREATE && rowWritable.id === 0 && index === 0)) {
                         isMatched = item
                     }
                 })
@@ -72,14 +70,15 @@ export const  TableProject = () => {
                 }
             })
             if (mode === EnumUpdateRowMode.DELETE) {array = array.filter(i => i !== undefined)}
-           //@ts-ignore
+            //@ts-ignore
             return array
         }
-        const dataArray = go(data)
+        let dataArray = go(data)
+
+        if(dataArray.length === 0) dataArray = [NEW_ROW]
 
         setData(dataArray)
     }
-
 
     const addNewRow = (id: number) => {
         const go = (rows: (TypeRowResponse | TypeNewRow)[] | undefined) => {
@@ -89,7 +88,6 @@ export const  TableProject = () => {
 
                 if(row.id === id) {
                     if (row.child === undefined) rowWritable.child = []
-
                     //@ts-ignore
                     rowWritable.child = [...row.child, {...NEW_ROW, parentId: row.id}]
 
@@ -161,7 +159,7 @@ export const  TableProject = () => {
     }
 
     return (
-        <TableContainer component={Paper} sx={{background: "#202124", height: "100vh"}}>
+        <StyledTableContainer>
             <Table >
                 <TableHead >
                     <StyledTableRow >
@@ -176,6 +174,7 @@ export const  TableProject = () => {
                 <TableBody>
                     { !isLoadingM && !!dataQuery && render.length === 0 ?
                        <TableRowProject
+                            updateRows={updateRows}
                             setIsOnLevelHover={setIsOnLevelHover}
                             isOnLevelHover={isOnLevelHover}
                             row={NEW_ROW}
@@ -187,6 +186,6 @@ export const  TableProject = () => {
                     }
                 </TableBody>
             </Table>
-        </TableContainer>
+        </StyledTableContainer>
     );
 }

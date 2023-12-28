@@ -9,9 +9,7 @@ export  async function updateRow(rID: number, data: any) {
         const {data: dataFromBackend} = await axios<TypeAxiosResponse>({
             url: `${BASE_URL}v1/outlay-rows/entity/${eID}/row/${rID}/update`,
             method: 'POST',
-            data: {
-                ...body
-            }
+            data: body
         })
 
         return [dataFromBackend.current].concat(dataFromBackend.changed)

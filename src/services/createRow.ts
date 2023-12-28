@@ -12,11 +12,7 @@ export  async function createRow(data: any) {
         const {data: dataFromBackend} = await axios<TypeAxiosResponse>({
             url: `http://185.244.172.108:8081/v1/outlay-rows/entity/${eID}/row/create`,
             method: 'POST',
-            data: {
-                // ...NEW_ROW,
-                // ...data
-                ...body
-            }
+            data: body
         })
 
         if (data.changed === undefined) return [dataFromBackend.current]

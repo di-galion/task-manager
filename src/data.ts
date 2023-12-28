@@ -2,6 +2,21 @@ export const eID = 114666
 
 export const BASE_URL = 'http://185.244.172.108:8081/'
 
+export const NEW_ROW = {
+    equipmentCosts: '',
+    estimatedProfit: '',
+    machineOperatorSalary: '',
+    mainCosts: '',
+    materials: '',
+    mimExploitation: '',
+    overheads: '',
+    rowName: '',
+    salary: '',
+    supportCosts: '',
+    total: 0,
+    id: 0,
+}
+
 export const NAVBAR_ITEMS = [
     {
         text: "По проекту",
@@ -61,18 +76,4 @@ export const NAVBAR_ITEMS = [
     },
 ]
 
-export const NEW_ROW = {
-    equipmentCosts: '',
-    estimatedProfit: '',
-    machineOperatorSalary: '',
-    mainCosts: '',
-    materials: '',
-    mimExploitation: '',
-    overheads: '',
-    rowName: '',
-    salary: '',
-    supportCosts: '',
-    total: 0,
-    id: 0,
-}
 

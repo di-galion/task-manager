@@ -1,2 +1,2 @@
-export {api, useGetListQuery, useCreateRowMutation, useDeleteRowMutation} from "./api"
+export {api, useGetListQuery} from "./api"
 export {store} from "./store"
